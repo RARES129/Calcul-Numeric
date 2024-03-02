@@ -42,35 +42,43 @@ def T(i, a):
             - 13860 * pow(a, 6)
             + 45 * pow(a, 8)
         )
+    else:
+        return 0
 
 
-def hierarchy(a, v_exact):
+def S(i, a):
+    sin = T(i, a) / m.sqrt(1 + T(i, a) ** 2)
+    return sin
 
-    err1 = abs(T(4, a) - v_exact)
-    err2 = abs(T(5, a) - v_exact)
-    err3 = abs(T(6, a) - v_exact)
-    err4 = abs(T(7, a) - v_exact)
-    err5 = abs(T(8, a) - v_exact)
-    err6 = abs(T(9, a) - v_exact)
 
-    errors = [(4, err1), (5, err2), (6, err3), (7, err4), (8, err5), (9, err6)]
-    sorted_errors = sorted(errors, key=lambda x: x[1])
+def C(i, a):
+    cos = 1 / m.sqrt(1 + T(i, a) ** 2)
+    return cos
 
+
+def bonus(a):
+    tan = [
+        (4, T(4, a)),
+        (5, T(5, a)),
+        (6, T(6, a)),
+        (7, T(7, a)),
+        (8, T(8, a)),
+        (9, T(9, a)),
+    ]
+    for each in tan:
+        print(
+            f"T({each[0]}, {a}) = {each[1]}, S({each[0]}, {a}) = {S(each[0], a)}, C({each[0]}, {a}) = {C(each[0], a)}"
+        )
     print(
-        f"T({sorted_errors[0][0]}, {a}), T({sorted_errors[1][0]}, {a}), T({sorted_errors[2][0]}, {a})\n"
+        "\n-------------------------------------------------------------------------------------------------------------\n"
     )
-    for each in sorted_errors:
-        print(f"T({each[0]}, {a}) Error: {each[1]}")
-
-    print("\n-----------------------------------------------------------------------\n")
 
 
 def main():
     counter = 1
     while counter < 10000:
         a = random.uniform(-m.pi / 2, m.pi / 2)
-        v_exact = m.tan(a)
-        hierarchy(a, v_exact)
+        bonus(a)
         counter += 1
 
 
