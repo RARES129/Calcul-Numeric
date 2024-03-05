@@ -2,6 +2,13 @@ import numpy as np
 import math as m
 import random
 
+global_err1 = 0
+global_err2 = 0
+global_err3 = 0
+global_err4 = 0
+global_err5 = 0
+global_err6 = 0
+
 
 def T(i, a):
     if i == 4:
@@ -53,16 +60,29 @@ def hierarchy(a, v_exact):
     err5 = abs(T(8, a) - v_exact)
     err6 = abs(T(9, a) - v_exact)
 
+    global global_err1
+    global global_err2
+    global global_err3
+    global global_err4
+    global global_err5
+    global global_err6
+    global_err1 += err1
+    global_err2 += err2
+    global_err3 += err3
+    global_err4 += err4
+    global_err5 += err5
+    global_err6 += err6
+
     errors = [(4, err1), (5, err2), (6, err3), (7, err4), (8, err5), (9, err6)]
     sorted_errors = sorted(errors, key=lambda x: x[1])
 
     print(
         f"T({sorted_errors[0][0]}, {a}), T({sorted_errors[1][0]}, {a}), T({sorted_errors[2][0]}, {a})\n"
     )
-    for each in sorted_errors:
-        print(f"T({each[0]}, {a}) Error: {each[1]}")
 
-    print("\n-----------------------------------------------------------------------\n")
+    print(
+        "----------------------------------------------------------------------------------------------\n"
+    )
 
 
 def main():
@@ -72,6 +92,20 @@ def main():
         v_exact = m.tan(a)
         hierarchy(a, v_exact)
         counter += 1
+    errors = [
+        (4, global_err1),
+        (5, global_err2),
+        (6, global_err3),
+        (7, global_err4),
+        (8, global_err5),
+        (9, global_err6),
+    ]
+    sorted_errors = sorted(errors, key=lambda x: x[1])
+    for each in sorted_errors:
+        print(f"T({each[0]}, a) error: {each[1]}")
+    print(
+        "\n----------------------------------------------------------------------------------------------\n"
+    )
 
 
 main()
