@@ -28,18 +28,26 @@ def matrix_det(A):
     return det
 
 
+def solve_system(L, U, b):
+    y = np.linalg.solve(L, b)
+    x = np.linalg.solve(U, y)
+    return x
+
+
 def main():
     A = np.array([[1, 1, -1], [2, -1, 1], [1, 3, -2]])
     A_init = A.copy()
+    b = np.array([3, -1, 5])
     crout_factorization(A)
     L = np.tril(A)
     U = np.triu(A)
     for i in range(len(A)):
         U[i][i] = 1
-    print("L:")
-    print(L)
-    print("\nU:")
-    print(U)
+    x = solve_system(L, U, b)
+    print(f"L= \n{L}")
+    print(f"\nU= \n{U}")
+    print("\nSolutia sistemului este: ")
+    print(f"x = {x}")
 
 
 main()
