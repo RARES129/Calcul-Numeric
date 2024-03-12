@@ -89,3 +89,7 @@ def main():
 
 
 main()
+
+# nu folosi L si U decat la afisare, ci doar matricea A
+# nu ti merge normalizarea pt 4x4
+# la bonus nu folosi deloc matricile L si U, ci doar vectori.
