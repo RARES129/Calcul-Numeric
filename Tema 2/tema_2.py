@@ -50,9 +50,12 @@ def euclidean_norm(norm):
 
 
 def main():
-    A = np.array([[1, 1, -1], [2, -1, 1], [1, 3, -2]])
+    # A = np.array([[1, 1, -1], [2, -1, 1], [1, 3, -2]])
+    A = np.array([[1, 0, 2, -1], [3, 2, 0, 4], [2, -1, 3, 5], [-1, 3, 2, 6]])
+
     A_init = A.copy()
-    b = np.array([3, -1, 5])
+    # b = np.array([3, -1, 5])
+    b = np.array([4, 10, 15, 17])
 
     crout_factorization(A)
     L = np.tril(A)
