@@ -18,9 +18,7 @@ def check_valid_matrix(A):
 
 def crout_factorization(A):
     if not check_valid_matrix(A):
-        raise ValueError(
-            "MATRICEA ESTE SINGULARA SAU NU ARE TOTI DETERMINANTII DE COLT NENULI !!!"
-        )
+        raise ValueError("MATRICEA NU POATE FI DESCOMPUSA !!!")
     n = len(A)
 
     for j in range(n):
