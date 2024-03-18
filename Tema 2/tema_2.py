@@ -2,15 +2,14 @@ import numpy as np
 
 eps = pow(10, -10)
 
-
 def check_valid_matrix(A):
     n = len(A)
     if A.shape[0] != A.shape[1]:
         return False
     for i in range(n):
-        if A[i, i] == 0:
+        if math.abs(A[i, i]) < eps:
             return False
-    if np.linalg.det(A) == 0:
+    if math.abs(np.linalg.det(A)) < eps:
         return False
 
     return True
