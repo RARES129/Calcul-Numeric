@@ -4,13 +4,15 @@ eps = pow(10, -10)
 
 
 def check_valid_matrix(A):
-    n = A.shape[0]
+    n = len(A)
     if A.shape[0] != A.shape[1]:
         return False
     for i in range(n):
-        minor = A[: i + 1, : i + 1]
-        if abs(np.linalg.det(minor)) < eps:
+        if A[i, i] == 0:
             return False
+    if np.linalg.det(A) == 0:
+        return False
+
     return True
 
 
@@ -29,6 +31,7 @@ def crout_factorization(A):
         for i in range(j + 1, n):
             sum_u = sum([A[j, k] * A[k, i] for k in range(j)])
             A[j, i] = (A[j, i] - sum_u) / A[j, j]
+    return A
 
 
 def matrix_det(A):
@@ -39,59 +42,107 @@ def matrix_det(A):
     return det
 
 
-def solve_system(L, U, b):
-    y = np.linalg.solve(L, b)
-    x = np.linalg.solve(U, y)
+def solve_system(A, b):
+    n = len(A)
+    y = np.zeros(n)
+    for i in range(n):
+        y[i] = (b[i] - sum(A[i][j] * y[j] for j in range(i))) / A[i][i]
+
+    x = np.zeros(n)
+    for i in range(n - 1, -1, -1):
+        x[i] = y[i] - sum(A[i][j] * x[j] for j in range(i + 1, n))
+
     return x
 
 
-def euclidean_norm(norm):
-    return np.linalg.norm(norm)
+def euclidean_norm(vector):
+    return np.sqrt(np.sum(vector**2))
 
 
 def main():
-    # A = np.array([[1, 1, -1], [2, -1, 1], [1, 3, -2]])
-    A = np.array([[1, 0, 2, -1], [3, 2, 0, 4], [2, -1, 3, 5], [-1, 3, 2, 6]])
+    n = int(input("ALEGE MARIMEA MATRICEI PATRATICE: "))
+    # A = np.array([[1, 1, -1], [2, -1, 1], [1, 3, -2]], dtype=float)
+    A = (np.random.rand(n, n) - 0.5) * 20
 
     A_init = A.copy()
-    # b = np.array([3, -1, 5])
-    b = np.array([4, 10, 15, 17])
+    # b = np.array([3, -1, 5],dtype=float)
+    b = (np.random.rand(n) - 0.5) * 20
 
-    crout_factorization(A)
+    A = crout_factorization(A)
     L = np.tril(A)
     U = np.triu(A)
     for i in range(len(A)):
         U[i][i] = 1
-
-    x_lu = solve_system(L, U, b)
+    x_lu = solve_system(A, b)
 
     euclidean_norma = euclidean_norm(A_init @ x_lu - b)
-
-    print(f"L= \n{L}")
+    print(
+        "--------------------------------------------------------------------------------------------"
+    )
+    print(f"\nA= \n{A_init}")
+    print(
+        "--------------------------------------------------------------------------------------------"
+    )
+    print(f"\nL= \n{L}")
+    print(
+        "--------------------------------------------------------------------------------------------"
+    )
     print(f"\nU= \n{U}")
+    print(
+        "--------------------------------------------------------------------------------------------"
+    )
+
+    print(f"\nDeterminantul matricei A este: {matrix_det(A)}")
+    print(
+        "--------------------------------------------------------------------------------------------"
+    )
+
     print("\nSolutia sistemului este: ")
     print(f"x = {x_lu}")
+    print(
+        "--------------------------------------------------------------------------------------------"
+    )
+
     print(f"\nNorma euclidiana este: {euclidean_norma}")
     if pow(10, -9) > euclidean_norma:
-        print("Solutia este suficient de apropiata de solutia exacta")
+        print("SOLUTIA ESTE DESTUL DE APROPIATA DE SOLUTIA EXACTA !!!")
+    print(
+        "--------------------------------------------------------------------------------------------"
+    )
+
     x_lu = np.linalg.solve(A_init, b)
     print(f"\nSolutia exacta este x=: {x_lu}")
+    print(
+        "--------------------------------------------------------------------------------------------"
+    )
     A_inv = np.linalg.inv(A_init)
     print(f"\nInversa matricei A este: \n{A_inv}")
+    print(
+        "--------------------------------------------------------------------------------------------"
+    )
     x_lib = np.linalg.solve(A_inv, b)
     print(f"\nSolutia folosind inversa matricei A este x=: {x_lib}")
+    print(
+        "--------------------------------------------------------------------------------------------"
+    )
     print(
         f"\nNorma euclidiana a diferentei solutiilor este: {euclidean_norm(x_lu - x_lib)}"
     )
     print(
+        "--------------------------------------------------------------------------------------------"
+    )
+    print(
         f"\nNorma euclidiana pentru x_lu - A_inv*b este: {euclidean_norm(x_lu - A_inv @ b)}"
+    )
+    print(
+        "--------------------------------------------------------------------------------------------"
     )
 
 
 main()
 
-# nu folosi L si U decat la afisare, ci doar matricea A
-# nu ti merge normalizarea pt 4x4
+# nu folosi L si U decat la afisare, ci doar matricea A - bifat
+# nu ti merge normalizarea pt 4x4 - bifat
 # la bonus nu folosi deloc matricile L si U, ci doar vectori.
 # fa o matrice cu elemente random, pt diferite dimensiuni. foloseste fc de indexare
-# nu rezolva sistemul cu libraria
+# nu rezolva sistemul cu libraria - bifat
