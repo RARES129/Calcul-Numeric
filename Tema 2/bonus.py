@@ -5,21 +5,21 @@ eps = pow(10, -10)
 
 
 def check_valid_matrix(A):
-    n = A.shape[0]
+    n = len(A)
     if A.shape[0] != A.shape[1]:
         return False
     for i in range(n):
-        minor = A[: i + 1, : i + 1]
-        if abs(np.linalg.det(minor)) < eps:
+        if abs(A[i, i]) < eps:
             return False
+    if abs(np.linalg.det(A)) < eps:
+        return False
+
     return True
 
 
 def crout_factorization(A):
     if not check_valid_matrix(A):
-        raise ValueError(
-            "MATRICEA ESTE SINGULARA SAU NU ARE TOTI DETERMINANTII DE COLT NENULI !!!"
-        )
+        raise ValueError("MATRICEA NU POATE FI DESCOMPUSA !!!")
 
     n = A.shape[0]
     L = np.zeros((n, n))
@@ -50,49 +50,67 @@ def crout_factorization(A):
     return L_elements, U_elements
 
 
-def reconstruct_LU(L_elements, U_elements):
-    n = int((-1 + np.sqrt(1 + 8 * len(L_elements))) / 2)
-    L = np.zeros((n, n))
-    U = np.zeros((n, n))
-
-    index = 0
-    for i in range(n):
-        for j in range(i + 1):
-            L[i, j] = L_elements[index]
-            index += 1
-
-    index = 0
-    for i in range(n):
-        for j in range(i, n):
-            U[i, j] = U_elements[index]
-            index += 1
-
-    return L, U
-
-
 def solve_LU(L, U, b):
-    y = np.linalg.solve(L, b)
-    x = np.linalg.solve(U, y)
+    n = int(np.sqrt(len(L) * 2))
+
+    y = np.zeros(n)
+    y[0] = b[0] / L[0]
+    for i in range(1, n):
+        sum_ly = 0
+        for j in range(i):
+            sum_ly += L[i * (i + 1) // 2 + j] * y[j]
+        y[i] = (b[i] - sum_ly) / L[i * (i + 1) // 2 + i]
+
+    x = np.zeros(n)
+    x[n - 1] = y[n - 1] / U[(n - 1) * n // 2 + (n - 1)]
+    for i in range(n - 2, -1, -1):
+        sum_ux = 0
+        for j in range(i + 1, n):
+            sum_ux += U[i * n - i * (i + 1) // 2 + j] * x[j]
+        x[i] = y[i] - sum_ux
+
     return x
+
+
+def euclidean_norm(vector):
+    return np.sqrt(np.sum(vector**2))
 
 
 def main():
 
-    A = np.array([[1, 1, -1], [2, -1, 1], [1, 3, -2]])
-    b = np.array([3, -1, 5])
+    n = int(input("ALEGE MARIMEA MATRICEI PATRATICE: "))
+    # A = np.array([[1, 1, -1], [2, -1, 1], [1, 3, -2]], dtype=float)
+    A = (np.random.rand(n, n) - 0.5) * 20
+
+    # b = np.array([3, -1, 5], dtype=float)
+    b = (np.random.rand(n) - 0.5) * 20
 
     L, U = crout_factorization(A)
+    print(
+        "--------------------------------------------------------------------------------------------"
+    )
     print("Elementele matricei L:")
     print(L)
+    print(
+        "--------------------------------------------------------------------------------------------"
+    )
     print("Elementele matricei U:")
     print(U)
-    L, U = reconstruct_LU(L, U)
-    print("\nMatricea L:")
-    print(L)
-    print("\nMatricea U:")
-    print(U)
+    print(
+        "--------------------------------------------------------------------------------------------"
+    )
     solution = solve_LU(L, U, b)
     print("\nSoluția sistemului Ax = b este:", solution)
+    print(
+        "--------------------------------------------------------------------------------------------"
+    )
+    euclidean_norma = euclidean_norm(A @ solution - b)
+    print("\nNorma euclidiană a soluției este:", euclidean_norma)
+    if pow(10, -9) > euclidean_norma:
+        print("SOLUTIA ESTE DESTUL DE APROPIATA DE SOLUTIA EXACTA !!!")
+    print(
+        "--------------------------------------------------------------------------------------------"
+    )
 
 
 main()

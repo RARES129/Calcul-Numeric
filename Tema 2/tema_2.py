@@ -59,12 +59,12 @@ def euclidean_norm(vector):
 
 def main():
     n = int(input("ALEGE MARIMEA MATRICEI PATRATICE: "))
-    # A = np.array([[1, 1, -1], [2, -1, 1], [1, 3, -2]], dtype=float)
-    A = (np.random.rand(n, n) - 0.5) * 20
+    A = np.array([[1, 1, -1], [2, -1, 1], [1, 3, -2]], dtype=float)
+    # A = (np.random.rand(n, n) - 0.5) * 20
 
     A_init = A.copy()
-    # b = np.array([3, -1, 5],dtype=float)
-    b = (np.random.rand(n) - 0.5) * 20
+    b = np.array([3, -1, 5], dtype=float)
+    # b = (np.random.rand(n) - 0.5) * 20
 
     A = crout_factorization(A)
     L = np.tril(A)
@@ -139,8 +139,3 @@ def main():
 
 main()
 
-# nu folosi L si U decat la afisare, ci doar matricea A - bifat
-# nu ti merge normalizarea pt 4x4 - bifat
-# la bonus nu folosi deloc matricile L si U, ci doar vectori.
-# fa o matrice cu elemente random, pt diferite dimensiuni. foloseste fc de indexare
-# nu rezolva sistemul cu libraria - bifat
