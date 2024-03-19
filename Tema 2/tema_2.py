@@ -59,12 +59,12 @@ def euclidean_norm(vector):
 
 def main():
     n = int(input("ALEGE MARIMEA MATRICEI PATRATICE: "))
-    A = np.array([[1, 1, -1], [2, -1, 1], [1, 3, -2]], dtype=float)
-    # A = (np.random.rand(n, n) - 0.5) * 20
+    # A = np.array([[1, 1, -1], [2, -1, 1], [1, 3, -2]], dtype=float)
+    A = (np.random.rand(n, n) - 0.5) * 20
 
     A_init = A.copy()
-    b = np.array([3, -1, 5], dtype=float)
-    # b = (np.random.rand(n) - 0.5) * 20
+    # b = np.array([3, -1, 5], dtype=float)
+    b = (np.random.rand(n) - 0.5) * 20
 
     A = crout_factorization(A)
     L = np.tril(A)
@@ -118,7 +118,7 @@ def main():
     print(
         "--------------------------------------------------------------------------------------------"
     )
-    x_lib = np.linalg.solve(A_inv, b)
+    x_lib = np.linalg.solve(A_init, b)
     print(f"\nSolutia folosind inversa matricei A este x=: {x_lib}")
     print(
         "--------------------------------------------------------------------------------------------"
