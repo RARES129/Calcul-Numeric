@@ -1,0 +1,52 @@
+import numpy as np
+import ex2 as ex2
+
+def solve_linear_system(Q, R, b):
+    """
+    Solves the linear system Ax = b using QR decomposition.
+    """
+    y = np.dot(Q.T, b)
+    x = np.linalg.solve(R, y)
+    return x
+
+def main():
+    A = np.array([[1, -1, 1], [1, 3, 3], [-1, -1, 5]], dtype=float)
+    b = np.array([1, 2, 3])  # replace with your actual b
+    n, m = A.shape
+    print("Input matrix: \n", A)
+    Q = np.identity(n)
+    R = A.astype(np.float32)
+    for i in range(min(n, m)):
+        # For each iteration, H matrix is calculated for (i+1)th row
+        Q, R = ex2.qr_step_factorization(Q, R, i, n)
+    min_dim = min(m, n)
+    R = np.around(R, decimals=7)
+    R = R[:min_dim, :min_dim]
+    Q = np.around(Q, decimals=7)
+    print("\n")
+    print("Q:")
+    print(Q)
+    print("\n")
+    print("R:")
+    print(R)
+    
+    # Solve the linear system using QR decomposition
+    x_qr = solve_linear_system(Q, R, b)
+    print("\n")
+    print("Solution using QR decomposition:")
+    print(x_qr)
+    
+    # Solve the linear system using numpy's built-in solver
+    x_np = np.linalg.solve(A, b)
+    print("\n")
+    print("Solution using numpy's built-in solver:")
+    print(x_np)
+    
+    # Calculate the norm of the difference between the two solutions
+    diff_norm = ex2.get_norm(x_qr - x_np)
+    print("\n")
+    print("Norm of the difference between the two solutions:")
+    print(diff_norm)
+
+if __name__ == "__main__":
+    main()

@@ -1,44 +1,72 @@
 import numpy as np
 
-A = np.array([[-1, -1, 1], [1, 3, 3], [-1, -1, 5]], dtype=float)
-m, n = A.shape
 
-eps = pow(10, -10)
+def column_convertor(x):
+    """
+    Converts 1d array to column vector
+    """
+    x.shape = (1, x.shape[0])
+    return x
 
-# Inițializăm Q și R
-Q = np.eye(m)
-R = A.copy()
 
-for j in range(n):
-    # Calculăm norma vectorului
-    normx = sum(R[i, j]**2 for i in range(j, m))**0.5
-    if normx == 0:
-        continue
+def get_norm(x):
+    """
+    Returns Norm of vector x
+    """
+    return np.sqrt(np.sum(np.square(x)))
 
-    rho = -1 if abs(R[j, j]) < eps else 1
-    u1 = R[j, j] - rho * normx
-    u = [0]*m
-    u[j:] = [R[i, j] / u1 for i in range(j, m)]
-    u[j] = 1
-    beta = -rho * u1 / normx
 
-    # Actualizăm R
-    for k in range(j, m):
-        for l in range(j, n):
-            R[k, l] -= beta * u[k] * sum(u[i] * R[i, l] for i in range(j, m))
+def householder_transformation(v):
+    """
+    Returns Householder matrix for vector v
+    """
+    size_of_v = v.shape[1]
+    e1 = np.zeros_like(v)
+    e1[0, 0] = 1
+    vector = get_norm(v) * e1
+    if v[0, 0] < 0:
+        vector = -vector
+    u = (v + vector).astype(np.float32)
+    H = np.identity(size_of_v) - (
+        (2 * np.matmul(np.transpose(u), u)) / np.matmul(u, np.transpose(u))
+    )
+    return H
 
-    # Actualizăm Q
-    for k in range(m):
-        for l in range(j, m):
-            Q[k, l] -= beta * u[l] * sum(u[i] * Q[k, i] for i in range(j, m))
 
-# Transpunem Q
-Q = Q.T
+def qr_step_factorization(q, r, iter, n):
+    """
+    Return Q and R matrices for iter number of iterations.
+    """
+    v = column_convertor(r[iter:, iter])
+    Hbar = householder_transformation(v)
+    H = np.identity(n)
+    H[iter:, iter:] = Hbar
+    r = np.matmul(H, r)
+    q = np.matmul(q, H)
+    return q, r
 
-# Printăm matricile Q și R
-print("Q:")
-for row in Q:
-    print(row)
-print("\nR:")
-for row in R:
-    print(row)
+
+def main():
+    A = np.array([[1, -1, 1], [1, 3, 3], [-1, -1, 5]], dtype=float)
+    n, m = A.shape
+    print("Input matrix: \n", A)
+    Q = np.identity(n)
+    R = A.astype(float)
+    for i in range(min(n, m)):
+        # For each iteration, H matrix is calculated for (i+1)th row
+        Q, R = qr_step_factorization(Q, R, i, n)
+    min_dim = min(m, n)
+    R = np.around(R, decimals=7)
+    R = R[:min_dim, :min_dim]
+    Q = np.around(Q, decimals=7)
+    print("\n")
+    print("Q:")
+    print(Q)
+    print("\n")
+    print("R:")
+    print(R)
+    
+
+
+if __name__ == "__main__":
+    main()
