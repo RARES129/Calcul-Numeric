@@ -47,8 +47,11 @@ def qr_step_factorization (q, r, iter, n):
 
 
 def main ():
-    A = np.array([[1, -1, 1], [1, 3, 3], [-1, -1, 5]], dtype=float)
-    n, m = A.shape
+    n = int(input("ALEGE MARIMEA MATRICEI: "))
+    m = int(input("ALEGE MARIMEA MATRICEI: "))
+    # A = np.array([[1, 1, -1], [2, -1, 1], [1, 3, -2]], dtype=float)
+    A = (np.random.rand(n, m) - 0.5) * 20
+
     print("Input matrix: \n", A)
     Q = np.identity(n)
     R = A.astype(float)

@@ -10,9 +10,12 @@ def solve_linear_system(Q, R, b):
     return x
 
 def main():
-    A = np.array([[1, -1, 1], [1, 3, 3], [-1, -1, 5]], dtype=float)
-    b = np.array([1, 2, 3])  # replace with your actual b
-    n, m = A.shape
+    n = int(input("ALEGE MARIMEA MATRICEI PATRATICE: "))
+    m = int(input("ALEGE MARIMEA MATRICEI PATRATICE: "))
+    # A = np.array([[1, 1, -1], [2, -1, 1], [1, 3, -2]], dtype=float)
+    A = (np.random.rand(n, m) - 0.5) * 20
+    # b = np.array([3, -1, 5], dtype=float)
+    b = (np.random.rand(m) - 0.5) * 20
     print("Input matrix: \n", A)
     Q = np.identity(n)
     R = A.astype(np.float32)
