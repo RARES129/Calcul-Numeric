@@ -1,6 +1,7 @@
 import numpy as np
 import ex2 as ex2
 
+
 def solve_linear_system(Q, R, b):
     """
     Solves the linear system Ax = b using QR decomposition.
@@ -9,22 +10,21 @@ def solve_linear_system(Q, R, b):
     x = np.linalg.solve(R, y)
     return x
 
+
 def main():
     n = int(input("ALEGE MARIMEA MATRICEI PATRATICE: "))
-    m = int(input("ALEGE MARIMEA MATRICEI PATRATICE: "))
     # A = np.array([[1, 1, -1], [2, -1, 1], [1, 3, -2]], dtype=float)
-    A = (np.random.rand(n, m) - 0.5) * 20
+    A = (np.random.rand(n, n) - 0.5) * 20
     # b = np.array([3, -1, 5], dtype=float)
-    b = (np.random.rand(m) - 0.5) * 20
+    b = (np.random.rand(n) - 0.5) * 20
     print("Input matrix: \n", A)
     Q = np.identity(n)
     R = A.astype(np.float32)
-    for i in range(min(n, m)):
+    for i in range(min(n, n)):
         # For each iteration, H matrix is calculated for (i+1)th row
         Q, R = ex2.qr_step_factorization(Q, R, i, n)
-    min_dim = min(m, n)
     R = np.around(R, decimals=7)
-    R = R[:min_dim, :min_dim]
+    R = R[:n, :n]
     Q = np.around(Q, decimals=7)
     print("\n")
     print("Q:")
@@ -32,24 +32,25 @@ def main():
     print("\n")
     print("R:")
     print(R)
-    
+
     # Solve the linear system using QR decomposition
     x_qr = solve_linear_system(Q, R, b)
     print("\n")
     print("Solution using QR decomposition:")
     print(x_qr)
-    
+
     # Solve the linear system using numpy's built-in solver
     x_np = np.linalg.solve(A, b)
     print("\n")
     print("Solution using numpy's built-in solver:")
     print(x_np)
-    
+
     # Calculate the norm of the difference between the two solutions
     diff_norm = ex2.get_norm(x_qr - x_np)
     print("\n")
     print("Norm of the difference between the two solutions:")
     print(diff_norm)
+
 
 if __name__ == "__main__":
     main()

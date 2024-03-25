@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def column_convertor (x):
+def column_convertor(x):
     """
     Converts 1d array to column vector
     """
@@ -9,14 +9,14 @@ def column_convertor (x):
     return x
 
 
-def get_norm (x):
+def get_norm(x):
     """
     Returns Norm of vector x
     """
     return np.sqrt(np.sum(np.square(x)))
 
 
-def householder_transformation (v):
+def householder_transformation(v):
     """
     Returns Householder matrix for vector v
     """
@@ -28,12 +28,12 @@ def householder_transformation (v):
         vector = -vector
     u = (v + vector).astype(np.float32)
     H = np.identity(size_of_v) - (
-            (2 * np.matmul(np.transpose(u), u)) / np.matmul(u, np.transpose(u))
+        (2 * np.matmul(np.transpose(u), u)) / np.matmul(u, np.transpose(u))
     )
     return H
 
 
-def qr_step_factorization (q, r, iter, n):
+def qr_step_factorization(q, r, iter, n):
     """
     Return Q and R matrices for iter number of iterations.
     """
@@ -46,21 +46,18 @@ def qr_step_factorization (q, r, iter, n):
     return q, r
 
 
-def main ():
+def main():
     n = int(input("ALEGE MARIMEA MATRICEI: "))
-    m = int(input("ALEGE MARIMEA MATRICEI: "))
-    # A = np.array([[1, 1, -1], [2, -1, 1], [1, 3, -2]], dtype=float)
-    A = (np.random.rand(n, m) - 0.5) * 20
+    A = np.array([[1, 1, -1], [2, -1, 1], [1, 3, -2]], dtype=float)
+    # A = (np.random.rand(n, n) - 0.5) * 20
 
     print("Input matrix: \n", A)
     Q = np.identity(n)
     R = A.astype(float)
-    for i in range(min(n, m)):
-        # For each iteration, H matrix is calculated for (i+1)th row
+    for i in range(n):
         Q, R = qr_step_factorization(Q, R, i, n)
-    min_dim = min(m, n)
     R = np.around(R, decimals=7)
-    R = R[:min_dim, :min_dim]
+    R = R[:n, :n]
     Q = np.around(Q, decimals=7)
     print("\n")
     print("Q:")
