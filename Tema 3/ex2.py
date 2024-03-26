@@ -1,25 +1,16 @@
 import numpy as np
 
 
-def column_convertor(x):
-    """
-    Converts 1d array to column vector
-    """
+def column_convertor (x):
     x.shape = (1, x.shape[0])
     return x
 
 
-def get_norm(x):
-    """
-    Returns Norm of vector x
-    """
+def get_norm (x):
     return np.sqrt(np.sum(np.square(x)))
 
 
-def householder_transformation(v):
-    """
-    Returns Householder matrix for vector v
-    """
+def householder_transformation (v):
     size_of_v = v.shape[1]
     e1 = np.zeros_like(v)
     e1[0, 0] = 1
@@ -28,15 +19,12 @@ def householder_transformation(v):
         vector = -vector
     u = (v + vector).astype(np.float32)
     H = np.identity(size_of_v) - (
-        (2 * np.matmul(np.transpose(u), u)) / np.matmul(u, np.transpose(u))
+            (2 * np.matmul(np.transpose(u), u)) / np.matmul(u, np.transpose(u))
     )
     return H
 
 
-def qr_step_factorization(q, r, iter, n):
-    """
-    Return Q and R matrices for iter number of iterations.
-    """
+def qr_step_factorization (q, r, iter, n):
     v = column_convertor(r[iter:, iter])
     Hbar = householder_transformation(v)
     H = np.identity(n)
@@ -65,7 +53,6 @@ def qr_decomposition (A):
     return Q, R
 
 
-# Now the main function serves as a way to execute the decomposition with a given matrix size
 def main (n):
     A = (np.random.rand(n, n) - 0.5) * 20
     A = np.around(A, decimals=4)
@@ -81,7 +68,6 @@ def main (n):
     return Q, R  # Return the Q and R matrices
 
 
-# The if __name__ == "__main__" block can be used to run this file directly for testing
 if __name__ == "__main__":
-    n = int(input("ALEGE MARIMEA MATRICEI: "))  # Get user input for the matrix size
-    main(n)  # Execute the main function with the provided matrix size
+    n = int(input("ALEGE MARIMEA MATRICEI: "))
+    main(n)

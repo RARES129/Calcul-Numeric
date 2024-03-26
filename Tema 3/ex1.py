@@ -7,5 +7,5 @@ A = (np.random.rand(n, n) - 0.5) * 20
 s = (np.random.rand(n) - 0.5) * 20
 
 # Calculăm vectorul b
-b = [sum(A[i][j]*s[j] for j in range(n)) for i in range(n)]
+b = [sum(A[i][j] * s[j] for j in range(n)) for i in range(n)]
 print(b)

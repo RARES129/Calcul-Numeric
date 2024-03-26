@@ -1,18 +1,12 @@
 import numpy as np
 from numpy.linalg import inv, norm
+
 from ex2 import (
-    column_convertor,
-    get_norm,
-    householder_transformation,
-    qr_step_factorization,
     main as ex2_main
 )
 
 
-def calculate_inverse(q, r):
-    """
-    Calculate inverse of matrix using QR decomposition
-    """
+def calculate_inverse (q, r):
     return np.matmul(inv(r), np.transpose(q))
 
 
@@ -21,15 +15,11 @@ n = int(input("ALEGE MARIMEA MATRICEI PATRATICE: "))
 A = (np.random.rand(n, n) - 0.5) * 20
 Q, R = ex2_main(n)
 
-# Calculate inverse using Householder transformation (QR decomposition)
 householder_inverse = calculate_inverse(Q, R)
 
-# Calculate inverse using library function
 lib_inverse = inv(A)
 
-# Calculate norm difference between two inverses
 norm_difference = norm(householder_inverse - lib_inverse)
-
 
 print("Householder Inverse: \n", householder_inverse)
 print("\nLibrary Inverse: \n", lib_inverse)
