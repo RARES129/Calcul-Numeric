@@ -17,7 +17,7 @@ s = (np.random.rand(n) - 0.5) * 20
 
 b_init = compute_vector_b(A_init, s)
 
-Q, R = ex2_main(n)
+Q, R = ex2_main(A_init)
 
 x_Householder = solve_linear_system(Q, R, b_init)
 x_QR = np.linalg.solve(A_init, b_init)
@@ -30,5 +30,5 @@ error4 = get_norm(x_QR - s) / get_norm(s)
 print("\n")
 print("||A_init*x_Householder - b_init||2 = ", error1)
 print("||A_init*x_QR - b_init||2 = ", error2)
-print("||x_Householder - s||2 ||s||2 = ", error3)
+print("||x_Householder - s||2 / ||s||2 = ", error3)
 print("||x_QR - s||2 / ||s||2 = ", error4)

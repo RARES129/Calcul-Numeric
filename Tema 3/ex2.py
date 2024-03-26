@@ -47,16 +47,12 @@ def qr_decomposition (A):
             R[i, :] *= -1
             Q[:, i] *= -1
 
-    R = np.around(R, decimals=6)
-    Q = np.around(Q, decimals=7)
-
     return Q, R
 
 
-def main (n):
-    A = (np.random.rand(n, n) - 0.5) * 20
-    A = np.around(A, decimals=4)
-    print("Input matrix: \n", A)
+def main (A):
+    #A = (np.random.rand(n, n) - 0.5) * 20
+    #print("Input matrix: \n", A)
 
     Q, R = qr_decomposition(A)
 
@@ -70,4 +66,6 @@ def main (n):
 
 if __name__ == "__main__":
     n = int(input("ALEGE MARIMEA MATRICEI: "))
-    main(n)
+    A = (np.random.rand(n, n) - 0.5) * 20
+    print ("A:\n ", A)
+    Q, R = main(A)
