@@ -1,5 +1,6 @@
 import numpy as np
 
+eps = pow(10, -10)
 
 def column_convertor (x):
     x.shape = (1, x.shape[0])
@@ -51,8 +52,8 @@ def qr_decomposition (A):
 
 
 def main (A):
-    #A = (np.random.rand(n, n) - 0.5) * 20
-    #print("Input matrix: \n", A)
+    # A = (np.random.rand(n, n) - 0.5) * 20
+    # print("Input matrix: \n", A)
 
     Q, R = qr_decomposition(A)
 
@@ -67,5 +68,5 @@ def main (A):
 if __name__ == "__main__":
     n = int(input("ALEGE MARIMEA MATRICEI: "))
     A = (np.random.rand(n, n) - 0.5) * 20
-    print ("A:\n ", A)
+    print("A:\n ", A)
     Q, R = main(A)
