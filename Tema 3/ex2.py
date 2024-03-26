@@ -46,26 +46,42 @@ def qr_step_factorization(q, r, iter, n):
     return q, r
 
 
-def main():
-    n = int(input("ALEGE MARIMEA MATRICEI: "))
-    A = np.array([[1, 1, -1], [2, -1, 1], [1, 3, -2]], dtype=float)
-    # A = (np.random.rand(n, n) - 0.5) * 20
-
-    print("Input matrix: \n", A)
+def qr_decomposition (A):
+    n = A.shape[0]
     Q = np.identity(n)
     R = A.astype(float)
     for i in range(n):
         Q, R = qr_step_factorization(Q, R, i, n)
-    R = np.around(R, decimals=7)
-    R = R[:n, :n]
+
+    # Adjusting signs if necessary
+    for i in range(min(Q.shape[0], R.shape[1])):
+        if R[i, i] < 0:
+            R[i, :] *= -1
+            Q[:, i] *= -1
+
+    R = np.around(R, decimals=6)
     Q = np.around(Q, decimals=7)
-    print("\n")
-    print("Q:")
+
+    return Q, R
+
+
+# Now the main function serves as a way to execute the decomposition with a given matrix size
+def main (n):
+    A = (np.random.rand(n, n) - 0.5) * 20
+    A = np.around(A, decimals=4)
+    print("Input matrix: \n", A)
+
+    Q, R = qr_decomposition(A)
+
+    print("\nQ:")
     print(Q)
-    print("\n")
-    print("R:")
+    print("\nR:")
     print(R)
 
+    return Q, R  # Return the Q and R matrices
 
+
+# The if __name__ == "__main__" block can be used to run this file directly for testing
 if __name__ == "__main__":
-    main()
+    n = int(input("ALEGE MARIMEA MATRICEI: "))  # Get user input for the matrix size
+    main(n)  # Execute the main function with the provided matrix size

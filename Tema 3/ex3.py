@@ -23,9 +23,9 @@ def main():
     for i in range(min(n, n)):
         # For each iteration, H matrix is calculated for (i+1)th row
         Q, R = ex2.qr_step_factorization(Q, R, i, n)
-    R = np.around(R, decimals=7)
+    R = np.around(R, decimals=6)
     R = R[:n, :n]
-    Q = np.around(Q, decimals=7)
+    Q = np.around(Q, decimals=6)
     print("\n")
     print("Q:")
     print(Q)
@@ -46,7 +46,7 @@ def main():
     print(x_np)
 
     # Calculate the norm of the difference between the two solutions
-    diff_norm = ex2.get_norm(x_qr - x_np)
+    diff_norm = np.around(ex2.get_norm(x_qr - x_np), decimals=4)
     print("\n")
     print("Norm of the difference between the two solutions:")
     print(diff_norm)

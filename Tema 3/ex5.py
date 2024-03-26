@@ -5,6 +5,7 @@ from ex2 import (
     get_norm,
     householder_transformation,
     qr_step_factorization,
+    main as ex2_main
 )
 
 
@@ -18,11 +19,7 @@ def calculate_inverse(q, r):
 n = int(input("ALEGE MARIMEA MATRICEI PATRATICE: "))
 # A = np.array([[1, 1, -1], [2, -1, 1], [1, 3, -2]], dtype=float)
 A = (np.random.rand(n, n) - 0.5) * 20
-Q = np.identity(n)
-R = A.astype(float)
-
-for i in range(n):
-    Q, R = qr_step_factorization(Q, R, i, n)
+Q, R = ex2_main(n)
 
 # Calculate inverse using Householder transformation (QR decomposition)
 householder_inverse = calculate_inverse(Q, R)
@@ -32,6 +29,7 @@ lib_inverse = inv(A)
 
 # Calculate norm difference between two inverses
 norm_difference = norm(householder_inverse - lib_inverse)
+
 
 print("Householder Inverse: \n", householder_inverse)
 print("\nLibrary Inverse: \n", lib_inverse)
