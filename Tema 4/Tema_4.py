@@ -74,9 +74,20 @@ def gauss_seidel(A, b, max_iterations=1000):
     return x, it_count + 1
 
 
+def calculate_norm(A, x_gs, b):
+    n = len(b)
+    Ax_gs = np.zeros(n)
+
+    for i in range(n):
+        Ax_gs[i] = sum(val * x_gs[j] for val, j in A[i])
+
+    norm = np.linalg.norm(Ax_gs - np.array(b), ord=np.inf)
+    return round(norm, 10)
+
+
 def main():
-    nume_fisier1 = "a_3.txt"
-    nume_fisier2 = "b_3.txt"
+    nume_fisier1 = "a_1.txt"
+    nume_fisier2 = "b_1.txt"
     data = citire_date_din_fisier(nume_fisier1)
     b = citire_vector_termeni_liberi(nume_fisier2)
     A = memorare_economica(data)
@@ -85,12 +96,14 @@ def main():
     solution, iterations = gauss_seidel(A, b)
 
     # AFISARE PENTERU EXERCITIUL 2
-    #--------------------------------
+    # --------------------------------
     # for index in range(len(solution)):
     #     print(f"x{index + 1} = {solution[index]}")
+    # print("Solutio:", solution[-1])
     # print("Iterations:", iterations)
-    #--------------------------------
-
-
+    # --------------------------------
+    norma=calculate_norm(A,solution,b) 
+    print("Norma:",norma) 
+    
 if __name__ == "__main__":
     main()
