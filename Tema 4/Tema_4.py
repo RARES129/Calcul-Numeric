@@ -102,8 +102,9 @@ def main():
     # print("Solutio:", solution[-1])
     # print("Iterations:", iterations)
     # --------------------------------
-    norma=calculate_norm(A,solution,b) 
-    print("Norma:",norma) 
-    
+    norma = calculate_norm(A, solution, b)
+    print("Norma:", norma)
+
+
 if __name__ == "__main__":
     main()
