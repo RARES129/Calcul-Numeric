@@ -61,21 +61,18 @@ def gauss_seidel(A, b, max_iterations=1000):
     n = len(b)
     x = [0.0 for _ in range(n)]
     for it_count in range(max_iterations):
-        x_new = x.copy()
+        convergence = True
         for i in range(n):
-            s1 = sum(val * x_new[j] for val, j in A[i] if j < i and abs(val) > eps)
+            old_xi = x[i]
+            s1 = sum(val * x[j] for val, j in A[i] if j < i and abs(val) > eps)
             s2 = sum(val * x[j] for val, j in A[i] if j > i and abs(val) > eps)
-            x_new[i] = round(
-                (b[i] - s1 - s2) / next(val for val, j in A[i] if j == i), 10
-            )
-        if (
-            all(abs(x_new[i] - x[i]) < eps for i in range(n))
-            and abs(x_new[i] - x[i]) <= max_iterations
-        ):
+            x[i] = round((b[i] - s1 - s2) / next(val for val, j in A[i] if j == i), 10)
+            if abs(x[i] - old_xi) >= eps:
+                convergence = False
+        if convergence:
             break
-        if any(np.isnan(x_new[i]) or np.isinf(x_new[i]) for i in range(n)):
+        if any(np.isnan(x[i]) or np.isinf(x[i]) for i in range(n)):
             return None, it_count + 1
-        x = x_new
 
     return x, it_count + 1
 
