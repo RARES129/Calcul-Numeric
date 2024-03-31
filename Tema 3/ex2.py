@@ -45,7 +45,7 @@ def householder_transformation (A):
     return Q, R
 
 
-n = int(input("Enter the size of the matrix: "))
+n = int(input("INTRODUCETI DIMENSIUNEA MATRICEI: "))
 A = (np.random.rand(n, n) - 0.5) * 20
 
 Q, R = householder_transformation(A)
