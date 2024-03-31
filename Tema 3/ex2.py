@@ -1,72 +1,55 @@
 import numpy as np
 
-eps = pow(10, -10)
-
-def column_convertor (x):
-    x.shape = (1, x.shape[0])
-    return x
+eps = 1e-10
 
 
-def get_norm (x):
-    return np.sqrt(np.sum(np.square(x)))
+def manual_copysign (x1, x2):
+    return np.abs(x1) if x2 >= 0 else -np.abs(x1)
 
 
-def householder_transformation (v):
-    size_of_v = v.shape[1]
-    e1 = np.zeros_like(v)
-    e1[0, 0] = 1
-    vector = get_norm(v) * e1
-    if v[0, 0] < 0:
-        vector = -vector
-    u = (v + vector).astype(np.float32)
-    H = np.identity(size_of_v) - (
-            (2 * np.matmul(np.transpose(u), u)) / np.matmul(u, np.transpose(u))
-    )
-    return H
+def norm (x):
+    return np.sqrt(np.sum(x ** 2))
 
 
-def qr_step_factorization (q, r, iter, n):
-    v = column_convertor(r[iter:, iter])
-    Hbar = householder_transformation(v)
-    H = np.identity(n)
-    H[iter:, iter:] = Hbar
-    r = np.matmul(H, r)
-    q = np.matmul(q, H)
-    return q, r
+def dot_product (x, y):
+    return np.sum(x * y)
 
 
-def qr_decomposition (A):
-    n = A.shape[0]
-    Q = np.identity(n)
-    R = A.astype(float)
-    for i in range(n):
-        Q, R = qr_step_factorization(Q, R, i, n)
+def householder_transformation (A):
+    (rows, cols) = A.shape
+    Q = np.identity(rows)
 
-    # Adjusting signs if necessary
-    for i in range(min(Q.shape[0], R.shape[1])):
-        if R[i, i] < 0:
-            R[i, :] *= -1
-            Q[:, i] *= -1
+    for r in range(cols):
+        x = A[r:, r]
+
+        sigma = dot_product(x, x)
+        if sigma == 0:
+            continue
+
+        alpha = -manual_copysign(norm(x), x[0])
+        u = np.copy(x)
+        u[0] -= alpha
+        beta = -1. / (alpha * u[0])
+
+        for k in range(r, cols):
+            tau = dot_product(u, A[r:, k]) * beta
+            A[r:, k] -= tau * u
+
+        for k in range(rows):
+            tau = dot_product(u, Q[r:, k]) * beta
+            Q[r:, k] -= tau * u
+
+    R = np.copy(A)
+    Q = Q.transpose()
 
     return Q, R
 
 
-def main (A):
-    # A = (np.random.rand(n, n) - 0.5) * 20
-    # print("Input matrix: \n", A)
+n = int(input("Enter the size of the matrix: "))
+A = (np.random.rand(n, n) - 0.5) * 20
 
-    Q, R = qr_decomposition(A)
+Q, R = householder_transformation(A)
 
-    print("\nQ:")
-    print(Q)
-    print("\nR:")
-    print(R)
-
-    return Q, R  # Return the Q and R matrices
-
-
-if __name__ == "__main__":
-    n = int(input("ALEGE MARIMEA MATRICEI: "))
-    A = (np.random.rand(n, n) - 0.5) * 20
-    print("A:\n ", A)
-    Q, R = main(A)
+print("Matrix A:\n", A)
+print("Matrix Q:\n", Q)
+print("Matrix R:\n", R)
