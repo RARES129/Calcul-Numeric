@@ -63,14 +63,20 @@ def gauss_seidel(A, b, max_iterations=1000):
     for it_count in range(max_iterations):
         x_new = x.copy()
         for i in range(n):
-            s1 = sum(val * x_new[j] for val, j in A[i] if j < i)
-            s2 = sum(val * x[j] for val, j in A[i] if j > i)
+            s1 = sum(val * x_new[j] for val, j in A[i] if j < i and abs(val) > eps)
+            s2 = sum(val * x[j] for val, j in A[i] if j > i and abs(val) > eps)
             x_new[i] = round(
                 (b[i] - s1 - s2) / next(val for val, j in A[i] if j == i), 10
             )
-        if all(abs(x_new[i] - x[i]) < eps for i in range(n)):
+        if (
+            all(abs(x_new[i] - x[i]) < eps for i in range(n))
+            and abs(x_new[i] - x[i]) <= max_iterations
+        ):
             break
+        if any(np.isnan(x_new[i]) or np.isinf(x_new[i]) for i in range(n)):
+            return None, it_count + 1
         x = x_new
+
     return x, it_count + 1
 
 
@@ -82,12 +88,35 @@ def calculate_norm(A, x_gs, b):
         Ax_gs[i] = sum(val * x_gs[j] for val, j in A[i])
 
     norm = np.linalg.norm(Ax_gs - np.array(b), ord=np.inf)
-    return round(norm, 10)
+    return norm
+
+
+def citire():
+    numar_fisier = int(input("Introduceti numarul fisierului (1 - 5): "))
+
+    if numar_fisier == 1:
+        nume_fisier1 = "a_1.txt"
+        nume_fisier2 = "b_1.txt"
+    elif numar_fisier == 2:
+        nume_fisier1 = "a_2.txt"
+        nume_fisier2 = "b_2.txt"
+    elif numar_fisier == 3:
+        nume_fisier1 = "a_3.txt"
+        nume_fisier2 = "b_3.txt"
+    elif numar_fisier == 4:
+        nume_fisier1 = "a_4.txt"
+        nume_fisier2 = "b_4.txt"
+    elif numar_fisier == 5:
+        nume_fisier1 = "a_5.txt"
+        nume_fisier2 = "b_5.txt"
+    else:
+        print("Numarul introdus nu este valid")
+        nume_fisier1, nume_fisier2 = citire()
+    return nume_fisier1, nume_fisier2
 
 
 def main():
-    nume_fisier1 = "a_1.txt"
-    nume_fisier2 = "b_1.txt"
+    nume_fisier1, nume_fisier2 = citire()
     data = citire_date_din_fisier(nume_fisier1)
     b = citire_vector_termeni_liberi(nume_fisier2)
     A = memorare_economica(data)
@@ -95,15 +124,13 @@ def main():
     verificare_diagonala(A, data[0][0])
     solution, iterations = gauss_seidel(A, b)
 
-    # AFISARE PENTERU EXERCITIUL 2
-    # --------------------------------
-    # for index in range(len(solution)):
-    #     print(f"x{index + 1} = {solution[index]}")
-    # print("Solutio:", solution[-1])
-    # print("Iterations:", iterations)
-    # --------------------------------
-    norma = calculate_norm(A, solution, b)
-    print("Norma:", norma)
+    if solution is not None:
+        print("Solution:", solution[-1])
+        norma = calculate_norm(A, solution, b)
+        print("Norma:", norma)
+    else:
+        print("DIVERGENTA !!!")
+    print("Iterations:", iterations)
 
 
 if __name__ == "__main__":
