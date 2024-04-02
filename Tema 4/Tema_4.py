@@ -57,6 +57,7 @@ def verificare_diagonala(matrix, n):
         print("MATRICEA NU ARE ELEMENTE EGALE CU 0 SAU LIPSA PE DIAGONALA PRINCIPALA")
 
 
+# facut gauss seidel cu a doua memorare
 def gauss_seidel(A, b, max_iterations=1000):
     n = len(b)
     x = [0.0 for _ in range(n)]
@@ -66,7 +67,7 @@ def gauss_seidel(A, b, max_iterations=1000):
             old_xi = x[i]
             s1 = sum(val * x[j] for val, j in A[i] if j < i and abs(val) > eps)
             s2 = sum(val * x[j] for val, j in A[i] if j > i and abs(val) > eps)
-            x[i] = round((b[i] - s1 - s2) / next(val for val, j in A[i] if j == i), 10)
+            x[i] = (b[i] - s1 - s2) / next(val for val, j in A[i] if j == i)
             if abs(x[i] - old_xi) >= eps:
                 convergence = False
         if convergence:
@@ -121,16 +122,16 @@ def main():
     verificare_diagonala(A, data[0][0])
     solution, iterations = gauss_seidel(A, b)
     print("Prima memorare A:")
-    for each in range(0,5):
+    for each in range(0, 5):
         print(A[each])
     print("-----------------------------------------------------")
     print("A doua memorare A:")
-    print(f"Valori",values[:5])
-    print(f"Indici coloane",ind_col[:5])
-    print(f"Inceput linii",inceput_linii[:5])
+    print(f"Valori", values[:5])
+    print(f"Indici coloane", ind_col[:5])
+    print(f"Inceput linii", inceput_linii[:5])
     print("-----------------------------------------------------")
     if solution is not None:
-        print("Solution:", solution[-1])
+        print("Solution:", solution[-10:-1])
         norma = calculate_norm(A, solution, b)
         print("Norma:", norma)
     else:
