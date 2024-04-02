@@ -120,7 +120,15 @@ def main():
     values, ind_col, inceput_linii = memorare_comprimata(data)
     verificare_diagonala(A, data[0][0])
     solution, iterations = gauss_seidel(A, b)
-
+    print("Prima memorare A:")
+    for each in range(0,5):
+        print(A[each])
+    print("-----------------------------------------------------")
+    print("A doua memorare A:")
+    print(f"Valori",values[:5])
+    print(f"Indici coloane",ind_col[:5])
+    print(f"Inceput linii",inceput_linii[:5])
+    print("-----------------------------------------------------")
     if solution is not None:
         print("Solution:", solution[-1])
         norma = calculate_norm(A, solution, b)
