@@ -78,6 +78,26 @@ def gauss_seidel(A, b, max_iterations=1000):
     return x, it_count + 1
 
 
+def gauss_seidel2(values, ind_col, inceput_linii, b, max_iter=1000):
+    n = len(b)
+    x = [0 for _ in range(n)]
+    for it_count in range(max_iter):
+        x_old = x.copy()
+        for i in range(n):
+            start = inceput_linii[i]
+            end = inceput_linii[i + 1]
+            sum1 = sum(values[j] * x[ind_col[j]] for j in range(start, end) if ind_col[j] < i)
+            sum2 = sum(values[j] * x_old[ind_col[j]] for j in range(start, end) if ind_col[j] > i)
+            diag_index = next(j for j in range(start, end) if ind_col[j] == i)
+            x[i] = (b[i] - sum1 - sum2) / values[diag_index]
+        if all(abs(x[i]-x_old[i]) < eps for i in range(n)):
+            break
+        if any(np.isnan(x[i]) or np.isinf(x[i]) for i in range(n)):
+            return None, it_count + 1
+    return x, it_count + 1
+
+
+
 def calculate_norm(A, x_gs, b):
     n = len(b)
     Ax_gs = np.zeros(n)
@@ -121,6 +141,7 @@ def main():
     values, ind_col, inceput_linii = memorare_comprimata(data)
     verificare_diagonala(A, data[0][0])
     solution, iterations = gauss_seidel(A, b)
+    solution2, iterations2 = gauss_seidel2(values, ind_col, inceput_linii, b)
     print("Prima memorare A:")
     for each in range(0, 5):
         print(A[each])
@@ -130,6 +151,7 @@ def main():
     print(f"Indici coloane", ind_col[:5])
     print(f"Inceput linii", inceput_linii[:5])
     print("-----------------------------------------------------")
+    print("GAUSS SEIDEL PRIMA MEMORARE:")
     if solution is not None:
         print("Solution:", solution[-10:-1])
         norma = calculate_norm(A, solution, b)
@@ -137,6 +159,15 @@ def main():
     else:
         print("DIVERGENTA !!!")
     print("Iterations:", iterations)
+    print("-----------------------------------------------------")
+    print("GAUSS SEIDEL A DOUA MEMORARE:")
+    if solution2 is not None:
+        print("Solution:", solution2[-10:-1])
+        norma = calculate_norm(A, solution2, b)
+        print("Norma:", norma)
+    else:
+        print("DIVERGENTA !!!")
+    print("Iterations:", iterations2)
 
 
 if __name__ == "__main__":
