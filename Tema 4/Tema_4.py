@@ -86,16 +86,21 @@ def gauss_seidel2(values, ind_col, inceput_linii, b, max_iter=1000):
         for i in range(n):
             start = inceput_linii[i]
             end = inceput_linii[i + 1]
-            sum1 = sum(values[j] * x[ind_col[j]] for j in range(start, end) if ind_col[j] < i)
-            sum2 = sum(values[j] * x_old[ind_col[j]] for j in range(start, end) if ind_col[j] > i)
+            sum1 = sum(
+                values[j] * x[ind_col[j]] for j in range(start, end) if ind_col[j] < i
+            )
+            sum2 = sum(
+                values[j] * x_old[ind_col[j]]
+                for j in range(start, end)
+                if ind_col[j] > i
+            )
             diag_index = next(j for j in range(start, end) if ind_col[j] == i)
             x[i] = (b[i] - sum1 - sum2) / values[diag_index]
-        if all(abs(x[i]-x_old[i]) < eps for i in range(n)):
+        if all(abs(x[i] - x_old[i]) < eps for i in range(n)):
             break
         if any(np.isnan(x[i]) or np.isinf(x[i]) for i in range(n)):
             return None, it_count + 1
     return x, it_count + 1
-
 
 
 def calculate_norm(A, x_gs, b):
