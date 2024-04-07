@@ -1,4 +1,6 @@
 import numpy as np
+import tkinter as tk
+from tkinter import ttk
 
 eps = pow(10, -10)
 
@@ -57,13 +59,10 @@ def euclidean_norm(vector):
     return np.sqrt(np.sum(vector**2))
 
 
-def main():
-    n = int(input("ALEGE MARIMEA MATRICEI PATRATICE: "))
-    # A = np.array([[1, 1, -1], [2, -1, 1], [1, 3, -2]], dtype=float)
+def on_submit():
+    n = int(size_entry.get())
     A = (np.random.rand(n, n) - 0.5) * 20
-
     A_init = A.copy()
-    # b = np.array([3, -1, 5], dtype=float)
     b = (np.random.rand(n) - 0.5) * 20
 
     A = crout_factorization(A)
@@ -74,68 +73,57 @@ def main():
     x_lu = solve_system(A, b)
 
     euclidean_norma = euclidean_norm(A_init @ x_lu - b)
-    print(
-        "--------------------------------------------------------------------------------------------"
-    )
-    print(f"\nA= \n{A_init}")
-    print(
-        "--------------------------------------------------------------------------------------------"
-    )
-    print(f"\nL= \n{L}")
-    print(
-        "--------------------------------------------------------------------------------------------"
-    )
-    print(f"\nU= \n{U}")
-    print(
-        "--------------------------------------------------------------------------------------------"
-    )
 
-    print(f"\nDeterminantul matricei A este: {matrix_det(A)}")
-    print(
-        "--------------------------------------------------------------------------------------------"
-    )
-
-    print("\nSolutia sistemului este: ")
-    print(f"x = {x_lu}")
-    print(
-        "--------------------------------------------------------------------------------------------"
-    )
-
-    print(f"\nNorma euclidiana este: {euclidean_norma}")
+    result_text.config(state=tk.NORMAL)
+    result_text.delete("1.0", tk.END)
+    result_text.insert(tk.END, f"\nA= \n{A_init}\n")
+    result_text.insert(tk.END, f"\nL= \n{L}\n")
+    result_text.insert(tk.END, f"\nU= \n{U}\n")
+    result_text.insert(tk.END, f"\nDeterminantul matricei A este: {matrix_det(A)}\n")
+    result_text.insert(tk.END, f"\nSolutia sistemului este: x = {x_lu}\n")
+    result_text.insert(tk.END, f"\nNorma euclidiana este: {euclidean_norma}\n")
     if pow(10, -9) > euclidean_norma:
-        print("SOLUTIA ESTE DESTUL DE APROPIATA DE SOLUTIA EXACTA !!!")
-    print(
-        "--------------------------------------------------------------------------------------------"
+        result_text.insert(
+            tk.END, "SOLUTIA ESTE DESTUL DE APROPIATA DE SOLUTIA EXACTA !!!\n"
+        )
+    result_text.insert(
+        tk.END, f"\nSolutia exacta este x=: {np.linalg.solve(A_init, b)}\n"
     )
-
-    x_lu = np.linalg.solve(A_init, b)
-    print(f"\nSolutia exacta este x=: {x_lu}")
-    print(
-        "--------------------------------------------------------------------------------------------"
+    result_text.insert(
+        tk.END, f"\nInversa matricei A este: \n{np.linalg.inv(A_init)}\n"
     )
-    A_inv = np.linalg.inv(A_init)
-    print(f"\nInversa matricei A este: \n{A_inv}")
-    print(
-        "--------------------------------------------------------------------------------------------"
+    result_text.insert(
+        tk.END,
+        f"\nSolutia folosind inversa matricei A este x=: {np.linalg.solve(A_init, b)}\n",
     )
-    x_lib = np.linalg.solve(A_init, b)
-    print(f"\nSolutia folosind inversa matricei A este x=: {x_lib}")
-    print(
-        "--------------------------------------------------------------------------------------------"
+    result_text.insert(
+        tk.END,
+        f"\nNorma euclidiana a diferentei solutiilor este: {euclidean_norm(x_lu - np.linalg.solve(A_init, b))}\n",
     )
-    print(
-        f"\nNorma euclidiana a diferentei solutiilor este: {euclidean_norm(x_lu - x_lib)}"
+    result_text.insert(
+        tk.END,
+        f"\nNorma euclidiana pentru x_lu - A_inv*b este: {euclidean_norm(x_lu - np.linalg.inv(A_init) @ b)}\n",
     )
-    print(
-        "--------------------------------------------------------------------------------------------"
-    )
-    print(
-        f"\nNorma euclidiana pentru x_lu - A_inv*b este: {euclidean_norm(x_lu - A_inv @ b)}"
-    )
-    print(
-        "--------------------------------------------------------------------------------------------"
-    )
+    result_text.config(state=tk.DISABLED)
 
 
-main()
+root = tk.Tk()
+root.title("Crout Factorization Solver")
 
+frame = ttk.Frame(root)
+frame.grid(row=0, column=0, padx=10, pady=10)
+
+size_label = ttk.Label(frame, text="ALEGE MARIMEA MATRICEI PATRATICE:")
+size_label.grid(row=0, column=0, sticky="w")
+
+size_entry = ttk.Entry(frame)
+size_entry.grid(row=0, column=1)
+
+submit_button = ttk.Button(frame, text="Submit", command=on_submit)
+submit_button.grid(row=0, column=2)
+
+result_text = tk.Text(root, height=20, width=80)
+result_text.grid(row=1, column=0, padx=10, pady=10)
+result_text.config(state=tk.DISABLED)
+
+root.mainloop()

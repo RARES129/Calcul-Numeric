@@ -1,4 +1,6 @@
 import numpy as np
+import tkinter as tk
+from tkinter import ttk
 
 
 eps = pow(10, -10)
@@ -76,41 +78,50 @@ def euclidean_norm(vector):
     return np.sqrt(np.sum(vector**2))
 
 
-def main():
-
-    n = int(input("ALEGE MARIMEA MATRICEI PATRATICE: "))
-    # A = np.array([[1, 1, -1], [2, -1, 1], [1, 3, -2]], dtype=float)
+def on_submit():
+    n = int(size_entry.get())
     A = (np.random.rand(n, n) - 0.5) * 20
-
-    # b = np.array([3, -1, 5], dtype=float)
     b = (np.random.rand(n) - 0.5) * 20
 
     L, U = crout_factorization(A)
-    print(
-        "--------------------------------------------------------------------------------------------"
-    )
-    print("Elementele matricei L:")
-    print(L)
-    print(
-        "--------------------------------------------------------------------------------------------"
-    )
-    print("Elementele matricei U:")
-    print(U)
-    print(
-        "--------------------------------------------------------------------------------------------"
-    )
     solution = solve_LU(L, U, b)
-    print("\nSoluția sistemului Ax = b este:", solution)
-    print(
-        "--------------------------------------------------------------------------------------------"
+
+    result_text.config(state=tk.NORMAL)
+    result_text.delete("1.0", tk.END)
+    result_text.insert(tk.END, "Elementele matricei L:\n")
+    result_text.insert(tk.END, f"{L}\n")
+    result_text.insert(tk.END, "Elementele matricei U:\n")
+    result_text.insert(tk.END, f"{U}\n")
+    result_text.insert(tk.END, "\nSoluția sistemului Ax = b este:\n")
+    result_text.insert(tk.END, f"{solution}\n")
+    result_text.insert(
+        tk.END,
+        f"\nNorma euclidiană a soluției este: {euclidean_norm(A @ solution - b)}\n",
     )
-    euclidean_norma = euclidean_norm(A @ solution - b)
-    print("\nNorma euclidiană a soluției este:", euclidean_norma)
-    if pow(10, -9) > euclidean_norma:
-        print("SOLUTIA ESTE DESTUL DE APROPIATA DE SOLUTIA EXACTA !!!")
-    print(
-        "--------------------------------------------------------------------------------------------"
-    )
+    if pow(10, -9) > euclidean_norm(A @ solution - b):
+        result_text.insert(
+            tk.END, "SOLUTIA ESTE DESTUL DE APROPIATA DE SOLUTIA EXACTA !!!\n"
+        )
+    result_text.config(state=tk.DISABLED)
 
 
-main()
+root = tk.Tk()
+root.title("Crout Factorization Solver")
+
+frame = ttk.Frame(root)
+frame.grid(row=0, column=0, padx=10, pady=10)
+
+size_label = ttk.Label(frame, text="ALEGE MARIMEA MATRICEI PATRATICE:")
+size_label.grid(row=0, column=0, sticky="w")
+
+size_entry = ttk.Entry(frame)
+size_entry.grid(row=0, column=1)
+
+submit_button = ttk.Button(frame, text="Submit", command=on_submit)
+submit_button.grid(row=0, column=2)
+
+result_text = tk.Text(root, height=20, width=80)
+result_text.grid(row=1, column=0, padx=10, pady=10)
+result_text.config(state=tk.DISABLED)
+
+root.mainloop()
