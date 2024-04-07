@@ -1,4 +1,5 @@
 import numpy as np
+import tkinter as tk
 
 eps = pow(10, -10)
 
@@ -114,66 +115,115 @@ def calculate_norm(A, x_gs, b):
     return norm
 
 
-def citire():
-    numar_fisier = int(input("Introduceti numarul fisierului (1 - 5): "))
-
-    if numar_fisier == 1:
-        nume_fisier1 = "a_1.txt"
-        nume_fisier2 = "b_1.txt"
-    elif numar_fisier == 2:
-        nume_fisier1 = "a_2.txt"
-        nume_fisier2 = "b_2.txt"
-    elif numar_fisier == 3:
-        nume_fisier1 = "a_3.txt"
-        nume_fisier2 = "b_3.txt"
-    elif numar_fisier == 4:
-        nume_fisier1 = "a_4.txt"
-        nume_fisier2 = "b_4.txt"
-    elif numar_fisier == 5:
-        nume_fisier1 = "a_5.txt"
-        nume_fisier2 = "b_5.txt"
-    else:
-        print("Numarul introdus nu este valid")
-        nume_fisier1, nume_fisier2 = citire()
-    return nume_fisier1, nume_fisier2
+def compare_matrices(matrix_a, matrix_b):
+    if len(matrix_a) != len(matrix_b):
+        return False
+    for row_a, row_b in zip(matrix_a, matrix_b):
+        dict_a = {col: value for value, col in row_a}
+        dict_b = {col: value for value, col in row_b}
+        for col in set(dict_a.keys()).union(dict_b.keys()):
+            if abs(dict_a.get(col, 0) - dict_b.get(col, 0)) > eps:
+                return False
+    return True
 
 
-def main():
-    nume_fisier1, nume_fisier2 = citire()
-    data = citire_date_din_fisier(nume_fisier1)
-    b = citire_vector_termeni_liberi(nume_fisier2)
-    A = memorare_economica(data)
-    values, ind_col, inceput_linii = memorare_comprimata(data)
-    verificare_diagonala(A, data[0][0])
-    solution, iterations = gauss_seidel(A, b)
-    solution2, iterations2 = gauss_seidel2(values, ind_col, inceput_linii, b)
-    print("Prima memorare A:")
-    for each in range(0, 5):
-        print(A[each])
-    print("-----------------------------------------------------")
-    print("A doua memorare A:")
-    print(f"Valori", values[:5])
-    print(f"Indici coloane", ind_col[:5])
-    print(f"Inceput linii", inceput_linii[:5])
-    print("-----------------------------------------------------")
-    print("GAUSS SEIDEL PRIMA MEMORARE:")
-    if solution is not None:
-        print("Solution:", solution[-10:-1])
-        norma = calculate_norm(A, solution, b)
-        print("Norma:", norma)
-    else:
-        print("DIVERGENTA !!!")
-    print("Iterations:", iterations)
-    print("-----------------------------------------------------")
-    print("GAUSS SEIDEL A DOUA MEMORARE:")
-    if solution2 is not None:
-        print("Solution:", solution2[-10:-1])
-        norma = calculate_norm(A, solution2, b)
-        print("Norma:", norma)
-    else:
-        print("DIVERGENTA !!!")
-    print("Iterations:", iterations2)
+def add_matrices(matrix_a, matrix_b):
+    n = len(matrix_a)
+    result = [[] for _ in range(n)]
+    for row in range(n):
+        dict_a = {col: value for value, col in matrix_a[row]}
+        dict_b = {col: value for value, col in matrix_b[row]}
+        for col in set(dict_a.keys()).union(dict_b.keys()):
+            result[row].append((dict_a.get(col, 0) + dict_b.get(col, 0), col))
+    return result
+
+
+class Application(tk.Tk):
+    def __init__(self):
+        super().__init__()
+        self.title("Gauss Seidel Solver")
+        self.geometry("400x300")
+
+        self.file_label = tk.Label(
+            self, text="Select input file:", font=("Helvetica", 14)
+        )
+        self.file_label.pack(pady=10)
+
+        self.file_frame = tk.Frame(self)
+        self.file_frame.pack()
+
+        self.file_buttons = []
+        for i in range(1, 7):
+            if i == 6:
+                button = tk.Button(
+                    self.file_frame,
+                    text=f"Bonus",
+                    font=("Helvetica", 12),
+                    command=lambda i=i: self.run_solver(i),
+                )
+            else:
+                button = tk.Button(
+                    self.file_frame,
+                    text=f"File {i}",
+                    font=("Helvetica", 12),
+                    command=lambda i=i: self.run_solver(i),
+                )
+            button.pack(side="left", padx=5, pady=5)
+            self.file_buttons.append(button)
+
+        self.result_text = tk.Text(self, wrap="word", font=("Helvetica", 12), height=10)
+        self.result_text.pack(pady=10, padx=10, fill="both", expand=True)
+
+        scrollbar = tk.Scrollbar(self, command=self.result_text.yview)
+        scrollbar.pack(side="right", fill="y")
+        self.result_text.config(yscrollcommand=scrollbar.set)
+
+        self.file_paths = [f"a_{i}.txt" for i in range(1, 6)]
+
+    def run_solver(self, index):
+        if index == 6:
+            matrix_a = memorare_economica(citire_date_din_fisier("a.txt"))
+            matrix_b = memorare_economica(citire_date_din_fisier("b.txt"))
+            matrix_aplusb = memorare_economica(citire_date_din_fisier("aplusb.txt"))
+
+            result_str = ""
+            if compare_matrices(add_matrices(matrix_a, matrix_b), matrix_aplusb):
+                result_str += (
+                    "Suma dintre A si B -> ESTE EGALA cu matricea din aplusb.txt\n"
+                )
+            else:
+                result_str += (
+                    "Suma dintre A si B -> NU ESTE EGALA cu matricea din aplusb.txt\n"
+                )
+
+            self.result_text.delete(1.0, tk.END)
+            self.result_text.insert(tk.END, result_str)
+        else:
+            nume_fisier1 = self.file_paths[index - 1]
+            nume_fisier2 = f"b_{index}.txt"
+            data = citire_date_din_fisier(nume_fisier1)
+            b = citire_vector_termeni_liberi(nume_fisier2)
+            A = memorare_economica(data)
+            values, ind_col, inceput_linii = memorare_comprimata(data)
+            verificare_diagonala(A, data[0][0])
+            solution, iterations = gauss_seidel(A, b)
+            solution2, iterations2 = gauss_seidel2(values, ind_col, inceput_linii, b)
+
+            result_str = ""
+            if solution is not None:
+                result_str += f"GAUSS SEIDEL PRIMA MEMORARE:\nSolution: {solution[-10:-1]}\nNorma: {calculate_norm(A, solution, b)}\nIterations: {iterations}\n\n"
+            else:
+                result_str += "GAUSS SEIDEL PRIMA MEMORARE:\nDIVERGENTA !!!\n\n"
+
+            if solution2 is not None:
+                result_str += f"GAUSS SEIDEL A DOUA MEMORARE:\nSolution: {solution2[-10:-1]}\nNorma: {calculate_norm(A, solution2, b)}\nIterations: {iterations2}"
+            else:
+                result_str += "GAUSS SEIDEL A DOUA MEMORARE:\nDIVERGENTA !!!"
+
+            self.result_text.delete(1.0, tk.END)
+            self.result_text.insert(tk.END, result_str)
 
 
 if __name__ == "__main__":
-    main()
+    app = Application()
+    app.mainloop()

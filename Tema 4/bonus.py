@@ -1,3 +1,7 @@
+import tkinter as tk
+from tkinter import filedialog
+
+
 epsilon = pow(10, -10)
 
 
@@ -48,22 +52,45 @@ def add_matrices(matrix_a, matrix_b):
     return result
 
 
-def main():
-    data_A = citire_date_din_fisier("a.txt")
-    data_B = citire_date_din_fisier("b.txt")
-    data_expected_sum = citire_date_din_fisier("aplusb.txt")
+class Application(tk.Tk):
+    def __init__(self):
+        super().__init__()
+        self.title("Matrix Addition Checker")
+        self.geometry("400x300")
 
-    matrix_A = memorare_economica(data_A)
-    matrix_B = memorare_economica(data_B)
-    expected_summed_matrix = memorare_economica(data_expected_sum)
+        self.start_button = tk.Button(
+            self, text="Start", font=("Helvetica", 12), command=self.run_solver
+        )
+        self.start_button.pack(pady=10)
 
-    computed_summed_matrix = add_matrices(matrix_A, matrix_B)
+        self.result_text = tk.Text(self, wrap="word", font=("Helvetica", 12), height=8)
+        self.result_text.pack(pady=10, padx=10, fill="both", expand=True)
 
-    if compare_matrices(computed_summed_matrix, expected_summed_matrix):
-        print("Suma dintre A si B -> ESTE EGALA cu matricea din fisierul aplusb.txt")
-    else:
-        print("Suma dintre A si B -> NU ESTE EGALA cu matricea din fisierul aplusb.txt")
+        self.file_path_a = "a.txt"
+        self.file_path_b = "b.txt"
+        self.file_path_aplusb = "aplusb.txt"
+
+    def run_solver(self):
+        data_A = citire_date_din_fisier(self.file_path_a)
+        data_B = citire_date_din_fisier(self.file_path_b)
+        data_expected_sum = citire_date_din_fisier(self.file_path_aplusb)
+
+        matrix_A = memorare_economica(data_A)
+        matrix_B = memorare_economica(data_B)
+        expected_summed_matrix = memorare_economica(data_expected_sum)
+
+        computed_summed_matrix = add_matrices(matrix_A, matrix_B)
+
+        if compare_matrices(computed_summed_matrix, expected_summed_matrix):
+            result_str = "Suma dintre A si B -> ESTE EGALA cu matricea din aplusb.txt\n"
+        else:
+            result_str = (
+                "Suma dintre A si B -> NU ESTE EGALA cu matricea din aplusb.txt\n"
+            )
+
+        self.result_text.insert(tk.END, result_str)
 
 
 if __name__ == "__main__":
-    main()
+    app = Application()
+    app.mainloop()
