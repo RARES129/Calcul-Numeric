@@ -58,7 +58,6 @@ def verificare_diagonala(matrix, n):
         print("MATRICEA NU ARE ELEMENTE EGALE CU 0 SAU LIPSA PE DIAGONALA PRINCIPALA")
 
 
-# facut gauss seidel cu a doua memorare
 def gauss_seidel(A, b, max_iterations=1000):
     n = len(b)
     x = [0.0 for _ in range(n)]
