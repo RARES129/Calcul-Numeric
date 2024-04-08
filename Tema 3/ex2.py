@@ -39,3 +39,16 @@ def householder_transformation (A):
         Q = manual_dot(Q, H.T)
 
     return Q, R
+
+
+def main ():
+    n = int(input())
+    A = (np.random.rand(n, n) - 0.5) * 20
+    print("Input matrix: \n", A)
+    Q, R = householder_transformation(A)
+    print(f"Q: \n{Q}")
+    print(f"R: \n{R}")
+
+
+if __name__ == "__main__":
+    main()

@@ -53,7 +53,7 @@ def householder_iterative_process (A, eps):
     return Ak, k
 
 
-n = int(input("INTRODUCETI DIMENSIUNEA MATRICEI: "))
+n = int(input())
 A = (np.random.rand(n, n) - 0.5) * 20
 A = (A + A.T) / 2
 

@@ -1,6 +1,6 @@
 import numpy as np
 
-n = int(input("ALEGE MARIMEA MATRICEI PATRATICE: "))
+n = int(input())
 # A = np.array([[1, 1, -1], [2, -1, 1], [1, 3, -2]], dtype=float)
 A = (np.random.rand(n, n) - 0.5) * 20
 # s = np.array([3, -1, 5], dtype=float)

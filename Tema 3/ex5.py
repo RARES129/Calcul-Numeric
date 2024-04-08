@@ -10,7 +10,7 @@ def calculate_inverse (q, r):
     return np.matmul(inv(r), np.transpose(q))
 
 
-n = int(input("ALEGE MARIMEA MATRICEI PATRATICE: "))
+n = int(input())
 A = (np.random.rand(n, n) - 0.5) * 20
 Q, R = ex2_main(A)
 

@@ -2,6 +2,8 @@ import numpy as np
 
 import ex2 as ex2
 
+from ex2 import householder_transformation
+
 
 def solve_linear_system (Q, R, b):
     y = np.dot(Q.T, b)
@@ -10,7 +12,7 @@ def solve_linear_system (Q, R, b):
 
 
 def main ():
-    n = int(input("ALEGE MARIMEA MATRICEI PATRATICE: "))
+    n = int(input())
     # A = np.array([[1, 1, -1], [2, -1, 1], [1, 3, -2]], dtype=float)
     A = (np.random.rand(n, n) - 0.5) * 20
     # b = np.array([3, -1, 5], dtype=float)
@@ -18,8 +20,7 @@ def main ():
     print("Input matrix: \n", A)
     Q = np.identity(n)
     R = A.astype(np.float32)
-    for i in range(min(n, n)):
-        Q, R = ex2.qr_step_factorization(Q, R, i, n)
+    Q,R = householder_transformation(A)
     R = np.around(R, decimals=6)
     R = R[:n, :n]
     Q = np.around(Q, decimals=6)
