@@ -11,7 +11,6 @@ def calculate_inverse (q, r):
 
 
 n = int(input("ALEGE MARIMEA MATRICEI PATRATICE: "))
-# A = np.array([[1, 1, -1], [2, -1, 1], [1, 3, -2]], dtype=float)
 A = (np.random.rand(n, n) - 0.5) * 20
 Q, R = ex2_main(A)
 
