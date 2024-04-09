@@ -78,25 +78,28 @@ def gauss_seidel(A, b, max_iterations=1000):
     return x, it_count + 1
 
 
-def gauss_seidel2 (values, ind_col, inceput_linii, b, max_iter=1000):
+def gauss_seidel2(values, ind_col, inceput_linii, b, max_iter=1000):
     n = len(b)
     x = [0 for _ in range(n)]
     for it_count in range(max_iter):
+        x_old = x.copy()
         for i in range(n):
-            x_old = x[i]
             start = inceput_linii[i]
             end = inceput_linii[i + 1]
-            sum1 = sum(values[j] * x[ind_col[j]] for j in range(start, end) if ind_col[j] < i)
-            sum2 = sum(values[j] * x[ind_col[j]] for j in range(start, end) if ind_col[j] > i)
+            sum1 = sum(
+                values[j] * x[ind_col[j]] for j in range(start, end) if ind_col[j] < i
+            )
+            sum2 = sum(
+                values[j] * x_old[ind_col[j]]
+                for j in range(start, end)
+                if ind_col[j] > i
+            )
             diag_index = next(j for j in range(start, end) if ind_col[j] == i)
             x[i] = (b[i] - sum1 - sum2) / values[diag_index]
-
-            if abs(x[i] - x_old) < eps:
-                continue
-
-            if np.isnan(x[i]) or np.isinf(x[i]):
-                return None, it_count + 1
-
+        if all(abs(x[i] - x_old[i]) < eps for i in range(n)):
+            break
+        if any(np.isnan(x[i]) or np.isinf(x[i]) for i in range(n)):
+            return None, it_count + 1
     return x, it_count + 1
 
 
